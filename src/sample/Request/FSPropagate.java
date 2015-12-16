@@ -21,7 +21,7 @@ public class FSPropagate{
 		try(Writer out=new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(output),"UTF-8"))){
 			StaticTree tree=StaticTree.getStaticTree(input,new UniformGenerator());
-			for(int i=0;i<10000;++i){
+			for(int i=0;i<tree.getFileSize();++i){
 				Request req=tree.fileInfo(i);
 				req.type=Request.ReqType.CREATE_FILE;
 				out.write(printLine(call.call(req)));
@@ -40,14 +40,14 @@ public class FSPropagate{
 		@Override
 		public List<Integer> call(Request request){
 			StaticTree.plainShuffle(order,uniform);
-			int find = uniform.nextInt(6)+1;
-			System.out.println(request + " : " + find);
-			return order.subList(0, find);
-			//return ClientOps.createFile(request.path.trim(), request.end);
+//			int find = uniform.nextInt(6)+1;
+//			System.out.println(request + " : " + find);
+//			return order.subList(0, find);
+			return ClientOps.createFile(request.path.trim(), request.end);
 		}
 	}
 
 	public static void main(String args[]) throws IOException{
-		parse("files/test2.txt","files/rank.txt",new NullCall());
+		parse("files/test.txt","files/rank.txt",new NullCall());
 	}
 }

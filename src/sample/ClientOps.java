@@ -20,6 +20,7 @@ import java.util.List;
 import net.Address;
 import net.IOControl;
 import net.Session;
+import sample.log.Utils;
 import util.FileHelper;
 import util.Log;
 
@@ -30,7 +31,7 @@ public class ClientOps {
 	private static IOControl control=new IOControl();
 	private static final Log log=Log.get();
 	private static final long MAX_VALUE = 0xFFFFFFFFL;
-	private static String pathname = "/home/groupe/E2/Client/";
+	private static String pathname = "/home/groupe/E2_Box/Client/";
 	private static String M_ip = "localhost", C_ip = "localhost";
 	private static int M_port = 7080, C_port = 7090;
 	private static String received_map = null;
@@ -137,7 +138,7 @@ public class ClientOps {
 				}
 			}
 		}
-		String filename = "/home/groupe/E2/Client/Input/" + file;
+		String filename = "/home/groupe/E2_Box/Client/Input/" + file;
 		String res[] = null;
 		res = selectInMap(map, file);
 		List<Integer> num = new ArrayList<Integer>();
@@ -232,23 +233,38 @@ public class ClientOps {
 	
 	private static void my_read(String request_on, String[] res) {
 		try{
+			Utils.connectToLogServer(log);
 			String serverIP = res[0].split(":")[0];
 			int serverPort = (Integer.parseInt(res[0].split(":")[1]));
-			String path_osd = "/home/groupe/E2/OSD/OSD";
+			String path_osd = "/home/groupe/E2_Box/OSD/OSD";
 			path_osd = path_osd + serverIP.substring(serverIP.length() - 1, serverIP.length()) + "/Files/";
 			long temp = readFile(control, serverIP, serverPort, path_osd + request_on, 0, 0);
 			log.i("Read: " + temp);
 			System.out.println(temp);
 		}
 		catch(Exception e){
-			e.printStackTrace();
-			log.w(e);
+			try{
+				Utils.connectToLogServer(log);
+				String serverIP = res[1].split(":")[0];
+				int serverPort = (Integer.parseInt(res[1].split(":")[1]));
+				String path_osd = "/home/groupe/E2_Box/OSD/OSD";
+				path_osd = path_osd + serverIP.substring(serverIP.length() - 1, serverIP.length()) + "/Files/";
+				long temp = readFile(control, serverIP, serverPort, path_osd + request_on, 0, 0);
+				log.i("Read: " + temp);
+				System.out.println("Read " + temp + " bytes");
+			}
+			catch(Exception ex){
+				ex.printStackTrace();
+				log.w(ex);
+			}
 		}
 	}
 	
 	private static void my_write(String request_on, String[] res) {
-		String path_osd = "/home/groupe/E2/Client/Input/";
+		
+		String path_osd = "/home/groupe/E2_Box/Client/Input/";
 		try{
+			Utils.connectToLogServer(log);
 			for (int i = 0; i < res.length; i++) {
 				res[i] = res[i].split(":")[0] + ":" +(Integer.parseInt(res[i].split(":")[1]) + 1);
 			}
