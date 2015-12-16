@@ -18,7 +18,6 @@ public class LookupOps {
 	
 	private static int count_transfer = 0;
 	private static int savepoint = 5000;
-	//private static String pathname = "D:\\ceph/";
 	private static String pathname = "/home/groupe/E2_Box/OSD/OSD";
 	private static String M_ip = "localhost";
 	private static int M_port = 7080, O_port = 7053, L_port;

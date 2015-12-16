@@ -4,14 +4,20 @@ import net.IOControl;
 import net.MsgFilter;
 import net.MsgHandler;
 import net.Session;
+
 import org.ini4j.Wini;
+
 import sample.log.Utils;
 import util.FileHelper;
 import util.Log;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 
@@ -84,9 +90,29 @@ public class FileReadEchoServer{
 		try{
 			Utils.connectToLogServer(log);
 			//  read conf
-			Wini conf=new Wini(new File("conf/sample/sample.ini"));
-			int port=conf.get("read server","port",int.class);
-
+			//Wini conf=new Wini(new File("conf/sample/sample.ini"));
+			//int port = conf.get("read server","port",int.class);
+			
+			String pathname = "/home/groupe/E2_Box/OSD/OSD";
+			String selfHostName;
+			try {
+				selfHostName = InetAddress.getLocalHost().getHostName();
+				InetAddress inetAddress = InetAddress.getByName(selfHostName);
+				String ipAddress = inetAddress.getHostAddress();
+				pathname = pathname + ipAddress.substring(ipAddress.length() - 1, ipAddress.length()) + "/";
+			} catch (UnknownHostException e) {
+				System.out.println(e);
+			}
+			int port = 7053;
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(pathname + "OSD_Listner_Details.txt"));
+				br.readLine();
+				port = Integer.parseInt(br.readLine().trim());
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 			try{
 				IOControl server=new IOControl();
 				//  register echo handlers

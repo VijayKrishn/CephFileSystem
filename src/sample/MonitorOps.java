@@ -891,6 +891,11 @@ public class MonitorOps {
 				pos_row++;
 			}
 		}
+		/*System.out.println("rows selected");
+		for (int a = 0; a < rin_row; a++) {
+			System.out.print("  " + sel_row[a]);
+		}
+		System.out.println(" ");*/
 		int pos_cabinet = 0;
 		int checkfromhere1 = 0;
 		for (int m = 0; m < rin_row; m++) {
@@ -937,6 +942,11 @@ public class MonitorOps {
 			}
 			checkfromhere1 = pos_cabinet;
 		}
+		/*System.out.println("cabinet selected");
+		for (int a = 0; a < rin_cabinet * rin_row; a++) {
+			System.out.print("  " + sel_cabinet[a]);
+		}
+		System.out.println("  ");*/
 		int pos_osd = 0;
 		int start1 = 0;
 		int end1 = rin_cabinet;

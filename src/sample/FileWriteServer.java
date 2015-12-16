@@ -59,6 +59,7 @@ public class FileWriteServer{
 			UUID transID=session.get("transid",UUID.class); //  nullable
 			ArrayList<Address> addresses=session.get("address",ArrayList.class);
 			final SocketChannel src=session.getSocketChannel();
+			//File newChunk=new File(chunkDir.toFile(),id);
 			
 			String selfHostName;
 			String pathname = "";
@@ -182,6 +183,11 @@ public class FileWriteServer{
 	public static void main(String args[]){
 		try{
 			Utils.connectToLogServer(log);
+			
+			//  write conf
+			//Wini conf=new Wini(new File("conf/sample/sample.ini"));
+			//int port=conf.get("write server","port",int.class);
+			
 			String pathname = "/home/groupe/E2_Box/OSD/OSD";
 			String selfHostName;
 			try {
@@ -202,6 +208,14 @@ public class FileWriteServer{
 				e.printStackTrace();
 			}
 			
+			//System.out.println(port);
+			//int port;
+			//if(args.length>0)
+			//	port=Integer.parseInt(args[0]);
+			//else{
+			//	log.s("No port specified!");
+			//	return;
+			//}
 			IOControl server=new IOControl();
 
 			// register file upload handler

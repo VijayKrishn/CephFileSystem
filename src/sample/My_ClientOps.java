@@ -198,6 +198,11 @@ public static String[] selectInMap(Node clustermap, String fileName) {
 				pos_row++;
 			}
 		}
+		/*System.out.println("rows selected");
+		for (int a = 0; a < rin_row; a++) {
+			System.out.print("  " + sel_row[a]);
+		}
+		System.out.println(" ");*/
 		int pos_cabinet = 0;
 		int checkfromhere1 = 0;
 		for (int m = 0; m < rin_row; m++) {
@@ -245,6 +250,11 @@ public static String[] selectInMap(Node clustermap, String fileName) {
 			}
 			checkfromhere1 = pos_cabinet;
 		}
+		/*System.out.println("cabinet selected");
+		for (int a = 0; a < rin_cabinet * rin_row; a++) {
+			System.out.print("  " + sel_cabinet[a]);
+		}
+		System.out.println("  ");*/
 		int pos_osd = 0;
 		int start1 = 0;
 		int end1 = rin_cabinet;
@@ -322,6 +332,11 @@ public static String[] selectInMap(Node clustermap, String fileName) {
 			end1 = end1 + rin_cabinet;
 
 		}
+		/*System.out.println("osd selected");
+		for (int a = 0; a < rin_osd * rin_cabinet * rin_row; a++) {
+			System.out.print("  " + sel_osd[a]);
+		}
+		System.out.println("  ");*/
 		return ips_ports;
 	}
 	

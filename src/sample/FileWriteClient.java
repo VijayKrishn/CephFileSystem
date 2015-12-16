@@ -45,9 +45,35 @@ public class FileWriteClient{
 			return false;
 		}
 	}
+	
+	static boolean delete(IOControl control,String path,ArrayList<Address> addresses){
+		try{
+			File file=new File(path);
+			FileInputStream fis=new FileInputStream(file);
+			FileChannel src=fis.getChannel();
+			Session req=new Session(FileWriteMsgType.DELETE);
+			String id=file.getName();
+			long size=file.length();
+			req.set("id",id);
+			req.set("size",size);
+			req.set("timeout",timeout);
+			req.set("address",addresses);
+			control.send(req,addresses.get(0));
+			SocketChannel dest=req.getSocketChannel();
+			FileHelper.upload(src,dest,size);
+			fis.close();
+			Session result=control.get(req);
+			return result.getType()==FileWriteMsgType.DELETE_OK;
+		}catch(Exception e){
+			log.w(e);
+			return false;
+		}
+	}
+	
 	static boolean upload(IOControl control,String path,ArrayList<Address> addresses){
 		return upload(control,path,addresses,0);
 	}
+	
 	static ArrayList<Address> splitAddress(String[] tokens,int start){
 		ArrayList<Address> result=new ArrayList<>();
 		for(int i=start;i<tokens.length;++i){
@@ -62,36 +88,36 @@ public class FileWriteClient{
 		return result;
 	}
 
-	public static void main(String args[]){
-		try{
-			Utils.connectToLogServer(log);
-			try{
-				IOControl control=new IOControl();
-				//  get what you type
-				Scanner in=new Scanner(System.in);
-				for(;;){
-					String cmd=in.nextLine();
-					if(cmd.length()>0){
-						String line=cmd.trim();
-						String[] tokens=line.split("\\s");
-						if(tokens.length>1){
-							ArrayList<Address> addresses=splitAddress(tokens,1);
-							if(addresses!=null){
-								if(upload(control,tokens[0],addresses))
-									log.i("File upload success.");
-								else
-									log.i("File upload fails.");
-								continue;
-							}
-						}
-						log.i("Input local file name and list of servers");
-					}
-				}
-			}catch(Exception e){
-				log.w(e);
-			}
-		}catch(IOException e){
-			log.w(e);
-		}
-	}
+//	public static void main(String args[]){
+//		try{
+//			Utils.connectToLogServer(log);
+//			try{
+//				IOControl control=new IOControl();
+//				//  get what you type
+//				Scanner in=new Scanner(System.in);
+//				for(;;){
+//					String cmd=in.nextLine();
+//					if(cmd.length()>0){
+//						String line=cmd.trim();
+//						String[] tokens=line.split("\\s");
+//						if(tokens.length>1){
+//							ArrayList<Address> addresses=splitAddress(tokens,1);
+//							if(addresses!=null){
+//								if(upload(control,tokens[0],addresses))
+//									log.i("File upload success.");
+//								else
+//									log.i("File upload fails.");
+//								continue;
+//							}
+//						}
+//						log.i("Input local file name and list of servers");
+//					}
+//				}
+//			}catch(Exception e){
+//				log.w(e);
+//			}
+//		}catch(IOException e){
+//			log.w(e);
+//		}
+//	}
 }

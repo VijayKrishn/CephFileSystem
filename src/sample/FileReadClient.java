@@ -80,82 +80,22 @@ public class FileReadClient{
 		}
 	}
 	
-	public static void main(String[] args){
-		IOControl control = new IOControl();
-		Wini conf;
-		try {
-			conf = new Wini(new File("sample.ini"));
-			String serverIP = conf.get("read server", "ip");
-			int serverPort=conf.get("read server","port",int.class);
-			for(int i =0; i < 10000; i++){
-				System.out.println("read :" + readFile(control, serverIP, serverPort, "temp/vk.zip", 0, 0));
-			}
-		} catch (InvalidFileFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-//	public static void main(String args[]){
-//		try{
-//			Utils.connectToLogServer(log);
-//
-//			//  read conf file here
-//			Wini conf=new Wini(new File("conf/sample/sample.ini"));
-//			String serverIP=conf.get("read server","ip");
+//	public static void main(String[] args){
+//		IOControl control = new IOControl();
+//		Wini conf;
+//		try {
+//			conf = new Wini(new File("sample.ini"));
+//			String serverIP = conf.get("read server", "ip");
 //			int serverPort=conf.get("read server","port",int.class);
-//
-//			try{
-//				IOControl control=new IOControl();
-//				Path tempDir=Files.createTempDirectory(null);
-//				//  get what you type
-//				Scanner in=new Scanner(System.in);
-//				Path temp=Files.createTempDirectory(null);
-//				for(;;){
-//					String cmd=in.nextLine();
-//					if(cmd.length()>0){
-//						String[] tokens=cmd.trim().split("\\s");
-//						if(tokens.length==1){
-//							//  download to temp
-//							log.i("Down to: "+downloadToTemp(tempDir,control,serverIP,serverPort,tokens[0]));
-//						}else if(tokens.length==2){
-//							String pre=tokens[0].toLowerCase();
-//							if(pre=="read" || pre=="r"){
-//								log.i("Read: "+readFile(control,serverIP,serverPort,tokens[1],0,0));
-//							}else if(pre=="download" || pre=="down" || pre=="d"){
-//								log.i("Down to: "+downloadToTemp(tempDir,control,serverIP,serverPort,tokens[0]));
-//							}else log.i("False cmd format");
-//						}else if(tokens.length==3){
-//							String pre=tokens[0].toLowerCase();
-//							if(pre=="read" || pre=="r"){
-//								try{
-//									long position=Long.parseLong(tokens[2]);
-//									log.i("Read: "+readFile(control,serverIP,serverPort,tokens[1],position,0));
-//								}catch(NumberFormatException e){
-//									log.i("position not recognized.");
-//								}
-//							}else log.i("False cmd format");
-//						}else if(tokens.length==4){
-//							String pre=tokens[0].toLowerCase();
-//							if(pre=="read" || pre=="r"){
-//								try{
-//									long position=Long.parseLong(tokens[2]);
-//									long limit=Long.parseLong(tokens[3]);
-//									log.i("Read: "+readFile(control,serverIP,serverPort,tokens[1],position,limit));
-//								}catch(NumberFormatException e){
-//									log.i("position not recognized.");
-//								}
-//							}else log.i("False cmd format");
-//						}else log.i("Unkown cmd.");
-//					}
-//				}
-//			}catch(Exception e){
-//				log.w(e);
+//			for(int i =0; i < 10000; i++){
+//				System.out.println("read :" + readFile(control, serverIP, serverPort, "temp/vk.zip", 0, 0));
 //			}
-//		}catch(IOException e){
-//			log.w(e);
+//		} catch (InvalidFileFormatException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 //		}
 //	}
 }
