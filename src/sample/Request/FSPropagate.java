@@ -21,7 +21,7 @@ public class FSPropagate{
 		try(Writer out=new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(output),"UTF-8"))){
 			StaticTree tree=StaticTree.getStaticTree(input,new UniformGenerator());
-			for(int i=0;i<tree.getFileSize();++i){
+			for(int i=0;i<10000;++i){
 				Request req=tree.fileInfo(i);
 				req.type=Request.ReqType.CREATE_FILE;
 				out.write(printLine(call.call(req)));

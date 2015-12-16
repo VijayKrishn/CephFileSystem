@@ -40,145 +40,6 @@ public class ClientOps {
 	private static int firsttime = 1;
 	private static Node map = null;
 	
-//	public static void main(String[] args) {
-//		Node map = null;	
-//		try {
-//			BufferedReader br = new BufferedReader(new FileReader(pathname + "Monitor_Listner_Details.txt"));
-//			M_ip = br.readLine().trim();
-//			M_port = Integer.parseInt(br.readLine().trim());
-//			System.out.println("Monitor ip is " + M_ip + " and Monitor port is " + M_port);
-//			br.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		try {
-//			BufferedReader br = new BufferedReader(new FileReader(pathname + "Client_Listner_Details.txt"));
-//			C_ip = br.readLine().trim();
-//			C_port = Integer.parseInt(br.readLine().trim());
-//			System.out.println("Client ip is " + C_ip + " and Client port is " + C_port);
-//			br.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		Call_Listner();
-//		System.out.println("will send map request ");
-//		send_To("MR_" + C_ip + ":" + C_port, M_ip + ":" + M_port);
-//		System.out.println("Map request sent ");
-//		String request_type = "";
-//		String request_on = "";
-//		String list_request_type[] = new String[2];
-//		list_request_type[0] = "read";
-//		list_request_type[1] = "write";
-//		File folder = new File(pathname + "Input/");
-//		File[] listOfFiles = folder.listFiles();
-//		String list_request_on[] = new String[listOfFiles.length];
-//		for (int i = 0; i < listOfFiles.length; i++) {
-//			list_request_on[i] = listOfFiles[i].getName();
-//		}
-//		//int got = 0;
-//		//int count = 0;
-//		while(true) {
-//			System.out.print("");
-//			if(map != null) {
-//				//count++;
-////				if (got == 0) {
-////					got = 1;
-////					for(int i = 0; i < list_request_on.length; i++) {
-////						request_on = list_request_on[i];
-////						String res[] = selectInMap(map, request_on);
-////						System.out.println("write " + request_on + " on " + res[0] + " " +res[1]);
-////						my_write(request_on, res);
-////						try {
-////							Thread.sleep(20);
-////						}
-////						catch (Exception e) {
-////							e.printStackTrace();
-////							System.out.println(e);
-////						}
-////					}
-////				}
-//				//request_generator
-//				Random randomGenerator = new Random();
-//				request_type = list_request_type[randomGenerator.nextInt(list_request_type.length)];
-//				request_on = list_request_on[randomGenerator.nextInt(list_request_on.length)];
-//				System.out.println("request is " + request_type + " " + request_on);
-//				try {
-//					String filepath =  pathname + "Requests.txt";
-//					BufferedWriter WriteFile = new BufferedWriter(new FileWriter(filepath, true));
-//					WriteFile.write(request_type + " " + request_on);
-//					WriteFile.newLine();
-//					WriteFile.close();
-//				}
-//				catch (Exception e) {
-//					e.printStackTrace();
-//					System.out.println(e + "in WriteFile");
-//				}
-//				//read
-//				if(request_type.equals("read")) {
-////					String[] res = null;
-////					res = selectInMap(map, request_on);
-////					my_read(request_on, res);
-//					String res[] = null;
-//					res = selectInMap(map, request_on);
-//					String send = "LOOK_" + C_ip + ":" + C_port + "_" + request_on;
-//					String sendto = res[0].split(":")[0] + ":" + (Integer.parseInt(res[0].split(":")[1]) + 2);
-//					send_To(send, sendto);
-//					while(true) {
-//						System.out.print("");
-//						if(received_ == true) {
-//							received_ = false;
-//							if(received_ipconfigs.length() != 0) {
-//								res = received_ipconfigs.split(",");
-//								received_ipconfigs = "";
-//								System.out.println("Received ipconfig from lookup is " + res[0] + " " + res[1] + " and reading from it ");
-//								my_read(request_on, res);
-//							}
-//							else {
-//								System.out.println("reading from " + res[0] + " and "+ res[1]);
-//								my_read(request_on, res);
-//							}
-//							break;
-//						}
-//					}
-//				}
-//				//write
-//				else if(request_type.equals("write")) {
-//					String res[] = null;
-//					res = selectInMap(map, request_on);
-//					String send = "LOOK_" + C_ip + ":" + C_port + "_" + request_on;
-//					String sendto = res[0].split(":")[0] + ":" + (Integer.parseInt(res[0].split(":")[1]) + 2);
-//					send_To(send, sendto);
-//					while(true) {
-//						System.out.print("");
-//						if(received_ == true) {
-//							received_ = false;
-//							if(received_ipconfigs.length() != 0) {
-//								res = received_ipconfigs.split(",");
-//								received_ipconfigs = "";
-//								System.out.println("Received ipconfig from lookup is " + res[0] + " " + res[1] + " and writing to it");
-//								my_write(request_on, res);
-//							}
-//							else {
-//								System.out.println("writing to " + res[0] + " and "+ res[1]);
-//								my_write(request_on, res);
-//							}
-//							break;
-//						}
-//					}
-//				}
-//			}
-//			//checking if got new map
-//			if(received_map != null) {
-//				map =  gson.fromJson(received_map, Node.class);
-//				System.out.println("map received ");
-//				String json = gson.toJson(map);
-//				System.out.println(json);
-//				received_map = null;
-//				send_To("MA", M_ip + ":" + M_port);
-//			}
-//		}	
-//	}
-	
 	public static void initMap(){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(pathname + "Monitor_Listner_Details.txt"));
@@ -291,10 +152,9 @@ public class ClientOps {
 	           else
 	        	   f.setLength(1024*1024*2);
 	           f.close();
-	           send_To("WR_" + filename, M_ip + ":" + M_port);
+	           send_To("WR_" + file, M_ip + ":" + M_port);
 	           my_write(file, res);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -407,17 +267,6 @@ public class ClientOps {
 		}
 	}
 	
-//	private static void my_download(String Filename, String[] res) {
-//		System.out.println("downloading file from " + res[0] + " to " +  pathname + "Tempfolder/");
-//		File F1 = new File(pathname + "Tempfolder/");
-//		Path tempDir = F1.toPath();
-//		String path_osd = "/home/groupe/E2/OSD/OSD";
-//		String serverIP = res[0].split(":")[0];
-//		int serverPort = (Integer.parseInt(res[0].split(":")[1]));
-//		path_osd = path_osd + serverIP.substring(serverIP.length() - 1, serverIP.length()) + "/Files/" + Filename;
-//		System.out.println(downloadToTemp(tempDir,control,serverIP,serverPort,path_osd));
-//	}
-	
 	public static void Call_Listner() {
 		
 		(new Thread() {
@@ -486,12 +335,10 @@ public class ClientOps {
 					read_once=src.read(buffer);
 					if(read_once<0) break;
 					read+=read_once;
-					//buffer.mark();
 				}
 				if(read_once<0) break;
 				if(read<size)
 					buffer.clear();
-					//buffer.reset();
 			}
 			return read;
 		}catch(Exception e){
@@ -548,7 +395,7 @@ public class ClientOps {
 		return result;
 	}
 	
-	public static synchronized String[] selectInMap(Node clustermap, String fileName) {
+	public static String[] selectInMap(Node clustermap, String fileName) {
 		
 		String FileName = "PlacementRules.txt";
 		String str = "";
@@ -586,13 +433,13 @@ public class ClientOps {
 		int pos_row = 0;
 		for (int i = 0; i < til_row; i++) {
 			double h1;
-			int uniqueid;
+			String uname;
 			int res = 1;
 			Node traversemap = clustermap;
 			while (traversemap.function == 1) {
 				System.out.print("");
-				uniqueid = traversemap.uniqueid;
-				h1 = hashMix(fileName,i,uniqueid);
+				uname = traversemap.uname;
+				h1 = hashMix(fileName,i,uname);
 				if (traversemap.val != 1) {
 					if (h1 > traversemap.val) {
 						traversemap = traversemap.right;
@@ -618,11 +465,6 @@ public class ClientOps {
 				pos_row++;
 			}
 		}
-		/*System.out.println("rows selected");
-		for (int a = 0; a < rin_row; a++) {
-			System.out.print("  " + sel_row[a]);
-		}
-		System.out.println(" ");*/
 		int pos_cabinet = 0;
 		int checkfromhere1 = 0;
 		for (int m = 0; m < rin_row; m++) {
@@ -636,13 +478,13 @@ public class ClientOps {
 			int til_cabinet = rin_cabinet;
 			for (int i = 0; i < til_cabinet; i++) {
 				double h2;
-				int uniqueid;
+				String uname;
 				int res = 1;
 				Node traversemap2 = traversemap1;
 				while (traversemap2.function == 2) {
 					System.out.print("");
-					uniqueid = traversemap2.uniqueid;
-					h2 = hashMix(fileName,i,uniqueid);
+					uname = traversemap2.uname;
+					h2 = hashMix(fileName,i,uname);
 					if (traversemap2.val != 1) {
 						if (h2 > traversemap2.val) {
 							traversemap2 = traversemap2.right;
@@ -670,11 +512,6 @@ public class ClientOps {
 			}
 			checkfromhere1 = pos_cabinet;
 		}
-		/*System.out.println("cabinet selected");
-		for (int a = 0; a < rin_cabinet * rin_row; a++) {
-			System.out.print("  " + sel_cabinet[a]);
-		}
-		System.out.println("  ");*/
 		int pos_osd = 0;
 		int start1 = 0;
 		int end1 = rin_cabinet;
@@ -698,15 +535,15 @@ public class ClientOps {
 				int til_osd = rin_osd;
 				for (int i = 0; i < til_osd; i++) {
 					double h3;
-					int uniqueid;
+					String uname;
 					int res = 0;
 					String ip_port = "";
 					String status;
 					Node traversemap3 = traversemap2;
 					while (true) {
 						System.out.print("");
-						uniqueid = traversemap3.uniqueid;
-						h3 = hashMix(fileName,i,uniqueid);
+						uname = traversemap3.uname;
+						h3 = hashMix(fileName,i,uname);
 						if (traversemap3.val != 1) {
 							if (h3 > traversemap3.val) {
 								traversemap3 = traversemap3.right;
@@ -752,14 +589,8 @@ public class ClientOps {
 			end1 = end1 + rin_cabinet;
 
 		}
-		/*System.out.println("osd selected");
-		for (int a = 0; a < rin_osd * rin_cabinet * rin_row; a++) {
-			System.out.print("  " + sel_osd[a]);
-		}
-		System.out.println("  ");*/
 		return ips_ports;
 	}
-	
 	private static long subtract(long val, long subtract) {
 		
 		return (val - subtract) & MAX_VALUE;
@@ -775,13 +606,13 @@ public class ClientOps {
 		return (val << shift) & MAX_VALUE;
 	}
 
-	private static double hashMix(String fileName, int r, int prime) {
+	private static double hashMix(String fileName, int r, String uname) {
 		
 		long a, b, c;
 		double hash;
 		a = fileName.hashCode();
 		b = (long) r;
-		c = (long) prime;
+		c = uname.hashCode();
 		a = subtract(a, b);
 		a = subtract(a, c);
 		a = xor(a, c >> 13);

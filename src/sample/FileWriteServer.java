@@ -5,10 +5,14 @@ import sample.log.Utils;
 import util.FileHelper;
 import util.Log;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.file.Files;
@@ -17,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.*;
+
+import org.ini4j.Wini;
 
 /**
  * Chunk upload server using GFS scheme
@@ -53,7 +59,18 @@ public class FileWriteServer{
 			UUID transID=session.get("transid",UUID.class); //  nullable
 			ArrayList<Address> addresses=session.get("address",ArrayList.class);
 			final SocketChannel src=session.getSocketChannel();
-			File newChunk=new File(chunkDir.toFile(),id);
+			
+			String selfHostName;
+			String pathname = "";
+			try {
+				selfHostName = InetAddress.getLocalHost().getHostName();
+				InetAddress inetAddress = InetAddress.getByName(selfHostName);
+				String ipAddress = inetAddress.getHostAddress();
+				pathname = "/home/groupe/E2_Box/OSD/OSD" +  ipAddress.substring(ipAddress.length() - 1, ipAddress.length()) + "/Files/";;
+			} catch (UnknownHostException e) {
+				System.out.println(e);
+			}
+			File newChunk=new File(pathname,id);
 			Session reply=session.clone();
 			reply.setType(isPrimary ? FileWriteMsgType.WRITE_FAIL : FileWriteMsgType.COMMIT_FAIL);
 			try{
@@ -165,14 +182,26 @@ public class FileWriteServer{
 	public static void main(String args[]){
 		try{
 			Utils.connectToLogServer(log);
-
-			int port;
-			if(args.length>0)
-				port=Integer.parseInt(args[0]);
-			else{
-				log.s("No port specified!");
-				return;
+			String pathname = "/home/groupe/E2_Box/OSD/OSD";
+			String selfHostName;
+			try {
+				selfHostName = InetAddress.getLocalHost().getHostName();
+				InetAddress inetAddress = InetAddress.getByName(selfHostName);
+				String ipAddress = inetAddress.getHostAddress();
+				pathname = pathname + ipAddress.substring(ipAddress.length() - 1, ipAddress.length()) + "/";
+			} catch (UnknownHostException e) {
+				System.out.println(e);
 			}
+			int port = 7054;
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(pathname + "OSD_Listner_Details.txt"));
+				br.readLine();
+				port = Integer.parseInt(br.readLine().trim()) + 1;
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 			IOControl server=new IOControl();
 
 			// register file upload handler
