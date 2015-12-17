@@ -28,7 +28,7 @@ import com.google.gson.Gson;
 
 public class ClientOps {
 	
-	private static IOControl control=new IOControl();
+	//private static IOControl control=new IOControl();
 	private static final Log log=Log.get();
 	private static final long MAX_VALUE = 0xFFFFFFFFL;
 	private static String pathname = "/home/groupe/E2_Box/Client/";
@@ -38,10 +38,10 @@ public class ClientOps {
 	private static String received_ipconfigs = "";
 	private static boolean received_ = false;
 	private static Gson gson = new Gson();
-	private static int firsttime = 1;
-	private static Node map = null;
+	private static volatile int firsttime = 1;
+	private static volatile Node map = null;
 	
-	public static void initMap(){
+	public static synchronized void initMap(){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(pathname + "Monitor_Listner_Details.txt"));
 			M_ip = br.readLine().trim();
@@ -64,24 +64,24 @@ public class ClientOps {
 		System.out.println("will send map request ");
 		send_To("MR_" + C_ip + ":" + C_port, M_ip + ":" + M_port);
 		System.out.println("Map request sent ");
+		while(true) {
+			System.out.print("");
+			if(received_map != null) {
+				map =  gson.fromJson(received_map, Node.class);
+				System.out.println("map received ");
+				String json = gson.toJson(map);
+				System.out.println(json);
+				received_map = null;
+				send_To("MA", M_ip + ":" + M_port);
+				break;
+			}
+		}
 	}
 	
-	public static List<Integer> readRequest(String request_on){
+	public synchronized static List<Integer> readRequest(String request_on, IOControl control){
 		if(firsttime == 1) {
 			firsttime = 0;
 			initMap();
-			while(true) {
-				System.out.print("");
-				if(received_map != null) {
-					map =  gson.fromJson(received_map, Node.class);
-					System.out.println("map received ");
-					String json = gson.toJson(map);
-					System.out.println(json);
-					received_map = null;
-					send_To("MA", M_ip + ":" + M_port);
-					break;
-				}
-			}
 		}
 		String res[] = null;
 		res = selectInMap(map, request_on);
@@ -101,11 +101,11 @@ public class ClientOps {
 					res = received_ipconfigs.split(",");
 					received_ipconfigs = "";
 					System.out.println("Received ipconfig from lookup is " + res[0] + " " + res[1] + " and reading from it ");
-					my_read(request_on, res);
+					my_read(request_on, res, control);
 				}
 				else {
 					System.out.println("reading from " + res[0] + " and "+ res[1]);
-					my_read(request_on, res);
+					my_read(request_on, res, control);
 				}
 				break;
 			}
@@ -125,20 +125,10 @@ public class ClientOps {
 		if(firsttime == 1) {
 			firsttime = 0;
 			initMap();
-			while(true) {
-				System.out.print("");
-				if(received_map != null) {
-					map =  gson.fromJson(received_map, Node.class);
-					System.out.println("map received ");
-					String json = gson.toJson(map);
-					System.out.println(json);
-					received_map = null;
-					send_To("MA", M_ip + ":" + M_port);
-					break;
-				}
-			}
+			
 		}
 		String filename = "/home/groupe/E2_Box/Client/Input/" + file;
+		IOControl control = new IOControl();
 		String res[] = null;
 		res = selectInMap(map, file);
 		List<Integer> num = new ArrayList<Integer>();
@@ -154,7 +144,7 @@ public class ClientOps {
 	        	   f.setLength(1024*1024*2);
 	           f.close();
 	           send_To("WR_" + file, M_ip + ":" + M_port);
-	           my_write(file, res);
+	           my_write(file, res, control);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -162,22 +152,10 @@ public class ClientOps {
 		return num;
 	}
 	
-	public static List<Integer> writeRequest(String request_on){
+	public synchronized static List<Integer> writeRequest(String request_on, IOControl control){
 		if(firsttime == 1) {
 			firsttime = 0;
 			initMap();
-			while(true) {
-				System.out.print("");
-				if(received_map != null) {
-					map =  gson.fromJson(received_map, Node.class);
-					System.out.println("map received ");
-					String json = gson.toJson(map);
-					System.out.println(json);
-					received_map = null;
-					send_To("MA", M_ip + ":" + M_port);
-					break;
-				}
-			}
 		}
 		String res[] = null;
 		res = selectInMap(map, request_on);
@@ -197,11 +175,11 @@ public class ClientOps {
 					res = received_ipconfigs.split(",");
 					received_ipconfigs = "";
 					System.out.println("Received ipconfig from lookup is " + res[0] + " " + res[1] + " and writing to it");
-					my_write(request_on, res);
+					my_write(request_on, res, control);
 				}
 				else {
 					System.out.println("writing to " + res[0] + " and "+ res[1]);
-					my_write(request_on, res);
+					my_write(request_on, res, control);
 				}
 				break;
 			}
@@ -231,9 +209,9 @@ public class ClientOps {
 		}
 	}
 	
-	private static void my_read(String request_on, String[] res) {
+	private static void my_read(String request_on, String[] res, IOControl control) {
 		try{
-			Utils.connectToLogServer(log);
+			//Utils.connectToLogServer(log);
 			String serverIP = res[0].split(":")[0];
 			int serverPort = (Integer.parseInt(res[0].split(":")[1]));
 			String path_osd = "/home/groupe/E2_Box/OSD/OSD";
@@ -244,7 +222,7 @@ public class ClientOps {
 		}
 		catch(Exception e){
 			try{
-				Utils.connectToLogServer(log);
+				//Utils.connectToLogServer(log);
 				String serverIP = res[1].split(":")[0];
 				int serverPort = (Integer.parseInt(res[1].split(":")[1]));
 				String path_osd = "/home/groupe/E2_Box/OSD/OSD";
@@ -260,11 +238,11 @@ public class ClientOps {
 		}
 	}
 	
-	private static void my_write(String request_on, String[] res) {
+	private static void my_write(String request_on, String[] res, IOControl control) {
 		
 		String path_osd = "/home/groupe/E2_Box/Client/Input/";
 		try{
-			Utils.connectToLogServer(log);
+			//Utils.connectToLogServer(log);
 			for (int i = 0; i < res.length; i++) {
 				res[i] = res[i].split(":")[0] + ":" +(Integer.parseInt(res[i].split(":")[1]) + 1);
 			}
@@ -411,7 +389,7 @@ public class ClientOps {
 		return result;
 	}
 	
-	public static String[] selectInMap(Node clustermap, String fileName) {
+	public static synchronized String[] selectInMap(Node clustermap, String fileName) {
 		
 		String FileName = "PlacementRules.txt";
 		String str = "";

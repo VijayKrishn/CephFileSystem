@@ -1,5 +1,7 @@
 package sample.Request;
 
+import net.IOControl;
+
 import org.ini4j.Wini;
 
 import req.DynamicTree;
@@ -16,7 +18,6 @@ import util.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.Authenticator.RequestorType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ReqGenerator{
 	static Log log=Log.get();
-
+	public static IOControl control = new IOControl();
 	public static class RequestThread implements Runnable{
 		UniformGenerator uniform;
 		ExpGenerator exp;
@@ -255,12 +256,12 @@ public class ReqGenerator{
 
 		@Override
 		public List<Integer> call(Request request){
-			System.out.println(request.toString());
-			System.out.println(request.end);
+			//System.out.println(request.toString());
+			//System.out.println(request.end);
 			if(request.type == Request.ReqType.SEQ_READ)
-				return ClientOps.readRequest(request.path.trim());
+				return ClientOps.readRequest(request.path.trim(), control);
 			else if(request.type == Request.ReqType.SEQ_WRITE)
-				return ClientOps.writeRequest(request.path.trim());
+				return ClientOps.writeRequest(request.path.trim(), control);
 //			log.i(request.toString());
 			return null;
 		}
@@ -330,7 +331,7 @@ public class ReqGenerator{
 				ratio,callbacks,start,threads);
 		try{
 			System.out.println("countdown");
-			start.await(5,TimeUnit.SECONDS);
+			start.await(100,TimeUnit.SECONDS);
 		}catch(InterruptedException ignored){
 		}finally{
 			service.shutdownNow();
