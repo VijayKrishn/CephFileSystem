@@ -53,9 +53,9 @@ public class FileWriteClient{
 			FileChannel src=fis.getChannel();
 			Session req=new Session(FileWriteMsgType.DELETE);
 			String id=file.getName();
-			long size=file.length();
+			long size=0;
 			req.set("id",id);
-			req.set("size",size);
+			req.set("size",0);
 			req.set("timeout",timeout);
 			req.set("address",addresses);
 			control.send(req,addresses.get(0));
@@ -88,9 +88,9 @@ public class FileWriteClient{
 		return result;
 	}
 
+	
 //	public static void main(String args[]){
-//		try{
-//			Utils.connectToLogServer(log);
+//			//Utils.connectToLogServer(log);
 //			try{
 //				IOControl control=new IOControl();
 //				//  get what you type
@@ -116,8 +116,5 @@ public class FileWriteClient{
 //			}catch(Exception e){
 //				log.w(e);
 //			}
-//		}catch(IOException e){
-//			log.w(e);
-//		}
 //	}
 }

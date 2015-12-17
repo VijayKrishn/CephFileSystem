@@ -16,8 +16,8 @@ import java.util.LinkedList;
 
 public class LookupOps {
 	
-	private static int count_transfer = 0;
-	private static int savepoint = 5000;
+	private static int lookupcount = 1;
+	//private static String pathname = "D:\\ceph/";
 	private static String pathname = "/home/groupe/E2_Box/OSD/OSD";
 	private static String M_ip = "localhost";
 	private static int M_port = 7080, O_port = 7053, L_port;
@@ -100,7 +100,7 @@ public class LookupOps {
 					e.printStackTrace();
 				}
 				if(new_ipconfigs.length() != 0) {
-					count_transfer = count_transfer + 1;
+					lookupcount = lookupcount + 1;
 				}
 				System.out.println("looking from lookupfile for file " + filename + " and got ips as " + new_ipconfigs);
 				send_To("LOOK_" + new_ipconfigs, c_ipconfig);
@@ -117,9 +117,15 @@ public class LookupOps {
 				System.out.println("cleared lookup file");
 				send_To("MA", M_ip + ":" + M_port);
 			}
-			if (count_transfer > savepoint) {
-				System.out.println(count_transfer);
-				savepoint = savepoint + 5000;
+			try {
+				String filepath =  pathname + "Lookup_Print.txt";
+				BufferedWriter WriteFile = new BufferedWriter(new FileWriter(filepath, true));
+				WriteFile.write(lookupcount);
+				WriteFile.newLine();
+				WriteFile.close();
+			}
+			catch (Exception e) {
+				System.out.println(e + "in WriteFile");
 			}
 		}
 	}

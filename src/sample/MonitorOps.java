@@ -114,6 +114,7 @@ public class MonitorOps {
 							}	
 							List<String> copy_to = new ArrayList<String>();
 							List<String> copy_from = new ArrayList<String>();
+							List<String> delete_from = new ArrayList<String>();
 							for (String check_this : result2) {
 								int got = 0;
 								for (String check_with : result1) {
@@ -123,6 +124,17 @@ public class MonitorOps {
 								}
 								if(got == 0) {
 									copy_to.add(check_this);
+								}
+							}
+							for (String check_this : result1) {
+								int got = 0;
+								for (String check_with : result2) {
+									if(check_this.equals(check_with)) {
+										got = 1;
+									}
+								}
+								if(got == 0) {
+									delete_from.add(check_this);
 								}
 							}
 							copy_from.add(result1[0]);
@@ -151,7 +163,37 @@ public class MonitorOps {
 								}
 								File F = new File(pathname + "Tempfolder/");
 								deleteFolderContent(F);
+							}
+							if(! delete_from.isEmpty()) { 
 								System.out.println("done with file name " + filename);
+								String send = "DL_" + filename;
+								for(int i = 0; i < delete_from.size(); i++) {
+									String ipconfig = delete_from.get(i);
+									String sendto = ipconfig.split(":")[0] + ":" + (Integer.parseInt(ipconfig.split(":")[1]) + 3);
+									send_To(send, sendto);
+								}
+							}
+							while(! MR_msg_queue.isEmpty()) {
+								String ipconfig = MR_msg_queue.removeFirst();
+								int got = 0;
+								for (String check_this : Clients) {
+									if(check_this.equals(ipconfig)) {
+										got = 1;
+									}
+								}
+								if(got == 0) {
+									Clients.add(ipconfig);
+								}
+								String str_map = gson.toJson(map);
+								num_msg_back = 1;
+								send_To("MA_" + str_map, ipconfig);
+								System.out.println("map is requested by " + ipconfig + " and sent to it");
+								while(true) {
+									System.out.print("");
+									if(num_msg_back == 0) {
+										break;
+									}
+								}
 							}
 						}
 						ReadFile.close();
@@ -185,7 +227,6 @@ public class MonitorOps {
 							break;
 						}
 					}
-					
 					map = null;
 					map = new_clustermap;
 					new_clustermap = null;					
@@ -197,8 +238,10 @@ public class MonitorOps {
 					int F_osd_id = Integer.parseInt(msg.substring(2, msg.length()));
 					set_osdid_as_failed(map, F_osd_id);
 					System.out.println("new map formed is " + gson.toJson(map));
+					System.out.println("sending new map to ");
 					num_msg_back = Clients.size();
 					for(String ipconfig : Clients) {
+						System.out.println(ipconfig);
 						send_To("MA_" + gson.toJson(map), ipconfig);
 					}
 					while(true) {
@@ -255,6 +298,28 @@ public class MonitorOps {
 							File F = new File(pathname + "Tempfolder/");
 							deleteFolderContent(F);
 							System.out.println("done with file name " + filename);
+							while(! MR_msg_queue.isEmpty()) {
+								String ipconfig = MR_msg_queue.removeFirst();
+								int got = 0;
+								for (String check_this : Clients) {
+									if(check_this.equals(ipconfig)) {
+										got = 1;
+									}
+								}
+								if(got == 0) {
+									Clients.add(ipconfig);
+								}
+								String str_map = gson.toJson(map);
+								num_msg_back = 1;
+								send_To("MA_" + str_map, ipconfig);
+								System.out.println("map is requested by " + ipconfig + " and sent to it");
+								while(true) {
+									System.out.print("");
+									if(num_msg_back == 0) {
+										break;
+									}
+								}
+							}
 						}
 						ReadFile.close();
 						System.out.println(count_transfer + " number of files transfered");
@@ -270,8 +335,10 @@ public class MonitorOps {
 					int O_osd_id = Integer.parseInt(msg.substring(2, msg.length()));
 					set_osdid_as_overloaded(map, O_osd_id);
 					System.out.println("new map formed is " + gson.toJson(map));
+					System.out.println("sending new map to ");
 					num_msg_back = Clients.size();
 					for(String ipconfig : Clients) {
+						System.out.println(ipconfig);
 						send_To("MA_" + gson.toJson(map), ipconfig);
 					}
 					while(true) {
@@ -328,6 +395,28 @@ public class MonitorOps {
 							File F = new File(pathname + "Tempfolder/");
 							deleteFolderContent(F);
 							System.out.println("done with file name " + filename);
+							while(! MR_msg_queue.isEmpty()) {
+								String ipconfig = MR_msg_queue.removeFirst();
+								int got = 0;
+								for (String check_this : Clients) {
+									if(check_this.equals(ipconfig)) {
+										got = 1;
+									}
+								}
+								if(got == 0) {
+									Clients.add(ipconfig);
+								}
+								String str_map = gson.toJson(map);
+								num_msg_back = 1;
+								send_To("MA_" + str_map, ipconfig);
+								System.out.println("map is requested by " + ipconfig + " and sent to it");
+								while(true) {
+									System.out.print("");
+									if(num_msg_back == 0) {
+										break;
+									}
+								}
+							}
 						}
 						ReadFile.close();
 						System.out.println(count_transfer + " number of files transfered");
@@ -891,11 +980,6 @@ public class MonitorOps {
 				pos_row++;
 			}
 		}
-		/*System.out.println("rows selected");
-		for (int a = 0; a < rin_row; a++) {
-			System.out.print("  " + sel_row[a]);
-		}
-		System.out.println(" ");*/
 		int pos_cabinet = 0;
 		int checkfromhere1 = 0;
 		for (int m = 0; m < rin_row; m++) {
@@ -942,11 +1026,6 @@ public class MonitorOps {
 			}
 			checkfromhere1 = pos_cabinet;
 		}
-		/*System.out.println("cabinet selected");
-		for (int a = 0; a < rin_cabinet * rin_row; a++) {
-			System.out.print("  " + sel_cabinet[a]);
-		}
-		System.out.println("  ");*/
 		int pos_osd = 0;
 		int start1 = 0;
 		int end1 = rin_cabinet;

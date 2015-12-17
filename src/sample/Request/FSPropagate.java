@@ -22,6 +22,7 @@ public class FSPropagate{
 				new FileOutputStream(output),"UTF-8"))){
 			StaticTree tree=StaticTree.getStaticTree(input,new UniformGenerator());
 			for(int i=0;i<tree.getFileSize();++i){
+				System.out.println(tree.getFileSize());
 				Request req=tree.fileInfo(i);
 				req.type=Request.ReqType.CREATE_FILE;
 				out.write(printLine(call.call(req)));
@@ -48,6 +49,6 @@ public class FSPropagate{
 	}
 
 	public static void main(String args[]) throws IOException{
-		parse("files/test.txt","files/rank.txt",new NullCall());
+		parse("files/70000","files/rank.txt",new NullCall());
 	}
 }

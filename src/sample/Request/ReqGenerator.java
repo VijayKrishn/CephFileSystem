@@ -331,7 +331,7 @@ public class ReqGenerator{
 				ratio,callbacks,start,threads);
 		try{
 			System.out.println("countdown");
-			start.await(100,TimeUnit.SECONDS);
+			start.await(10000,TimeUnit.SECONDS);
 		}catch(InterruptedException ignored){
 		}finally{
 			service.shutdownNow();

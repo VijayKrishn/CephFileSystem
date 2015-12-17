@@ -57,9 +57,9 @@ public class FileHelper{
 			position+=src.transferTo(dest,size-position);
 	}
 	
-	public static void delete(){
-		
-	}
+//	public static void delete(){
+//		
+//	}
 
 	/**
 	 * Download bytes from socket channel to local disk file channel, this method will download up to size-position bytes.

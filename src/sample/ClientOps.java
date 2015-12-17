@@ -217,24 +217,30 @@ public class ClientOps {
 			String path_osd = "/home/groupe/E2_Box/OSD/OSD";
 			path_osd = path_osd + serverIP.substring(serverIP.length() - 1, serverIP.length()) + "/Files/";
 			long temp = readFile(control, serverIP, serverPort, path_osd + request_on, 0, 0);
-			log.i("Read: " + temp);
-			System.out.println(temp);
+			if(temp == 0) {
+				try{
+					//Utils.connectToLogServer(log);
+					serverIP = res[1].split(":")[0];
+					serverPort = (Integer.parseInt(res[1].split(":")[1]));
+					path_osd = "/home/groupe/E2_Box/OSD/OSD";
+					path_osd = path_osd + serverIP.substring(serverIP.length() - 1, serverIP.length()) + "/Files/";
+					temp = readFile(control, serverIP, serverPort, path_osd + request_on, 0, 0);
+					log.i("Read: " + temp);
+					System.out.println("Read " + temp + " bytes");
+				}
+				catch(Exception ex){
+					ex.printStackTrace();
+					log.w(ex);
+				}
+			}
+			else {
+				log.i("Read: " + temp);
+				System.out.println(temp);
+			}
 		}
 		catch(Exception e){
-			try{
-				//Utils.connectToLogServer(log);
-				String serverIP = res[1].split(":")[0];
-				int serverPort = (Integer.parseInt(res[1].split(":")[1]));
-				String path_osd = "/home/groupe/E2_Box/OSD/OSD";
-				path_osd = path_osd + serverIP.substring(serverIP.length() - 1, serverIP.length()) + "/Files/";
-				long temp = readFile(control, serverIP, serverPort, path_osd + request_on, 0, 0);
-				log.i("Read: " + temp);
-				System.out.println("Read " + temp + " bytes");
-			}
-			catch(Exception ex){
-				ex.printStackTrace();
-				log.w(ex);
-			}
+			e.printStackTrace();
+			log.w(e);
 		}
 	}
 	

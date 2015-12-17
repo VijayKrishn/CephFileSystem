@@ -89,9 +89,9 @@ public class FileReadEchoServer{
 	public static void main(String args[]){
 		try{
 			Utils.connectToLogServer(log);
-			//  read conf
-			//Wini conf=new Wini(new File("conf/sample/sample.ini"));
-			//int port = conf.get("read server","port",int.class);
+//			//  read conf
+//			Wini conf=new Wini(new File("conf/sample/sample.ini"));
+//			int port=conf.get("read server","port",int.class);
 			
 			String pathname = "/home/groupe/E2_Box/OSD/OSD";
 			String selfHostName;
@@ -112,7 +112,7 @@ public class FileReadEchoServer{
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 			try{
 				IOControl server=new IOControl();
 				//  register echo handlers
